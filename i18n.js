@@ -23,7 +23,7 @@ const i18nResources = {
         yearsShort: "岁",
         historicalEventsTitle: "🎯 在这个年龄，他们做到了：",
         selectDateFirst: "选择出生日期后显示历史事件",
-        
+
         // 年龄调侃
         ageHumor: {
             0: "👶 哇，刚来到这个世界的小宝贝！",
@@ -50,7 +50,7 @@ const i18nResources = {
             95: "✨ 九十五岁，见证了近一个世纪的变迁",
             100: "🎊 百岁寿星，生命的传奇！"
         },
-        
+
         // 历史事件
         historicalEvents: {
             15: [
@@ -114,7 +114,7 @@ const i18nResources = {
                 "袁隆平团队研发的耐盐碱水稻取得进展"
             ]
         },
-        
+
         // 错误和提示消息
         errorMessages: {
             invalidDate: "日期格式不正确，请使用YYYY-MM-DD格式",
@@ -127,7 +127,7 @@ const i18nResources = {
             longLife: "🌟 长寿之星！祝您健康长寿！"
         }
     },
-    
+
     'en-US': {
         appTitle: "Life Timer ✨",
         language: "English",
@@ -151,7 +151,7 @@ const i18nResources = {
         yearsShort: "yrs",
         historicalEventsTitle: "🎯 At this age, they achieved:",
         selectDateFirst: "Select birth date to show historical events",
-        
+
         // 年龄调侃
         ageHumor: {
             0: "👶 Wow, a newborn baby just arrived in this world!",
@@ -178,7 +178,7 @@ const i18nResources = {
             95: "✨ Ninety-five, witnessed nearly a century of changes",
             100: "🎊 Centenarian, a legend of life!"
         },
-        
+
         // 历史事件
         historicalEvents: {
             15: [
@@ -242,7 +242,7 @@ const i18nResources = {
                 " Yuan Longping's team made progress in salt-alkali tolerant rice"
             ]
         },
-        
+
         // 错误和提示消息
         errorMessages: {
             invalidDate: "Invalid date format, please use YYYY-MM-DD format",
@@ -265,7 +265,7 @@ function toggleLanguage() {
     currentLanguage = currentLanguage === 'zh-CN' ? 'en-US' : 'zh-CN';
     applyLanguage();
     updateLanguageButton();
-    
+
     // 保存语言设置到本地存储
     localStorage.setItem('preferredLanguage', currentLanguage);
 }
@@ -279,7 +279,7 @@ function applyLanguage() {
             element.textContent = i18nResources[currentLanguage][key];
         }
     });
-    
+
     // 更新占位符文本
     document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
         const key = element.getAttribute('data-i18n-placeholder');
@@ -287,14 +287,80 @@ function applyLanguage() {
             element.placeholder = i18nResources[currentLanguage][key];
         }
     });
-    
-    // 重新应用当前显示的内容（如果已经选择了日期）
-    const birthDate = document.getElementById('dateInputManual').value;
-    if (birthDate) {
-        updateDisplay(birthDate);
+    // 更新语言按钮文本
+    updateLanguageButton();
+    // 更新日期选择器的选项文本
+    updateDateSelectorsText();
+    // 触发语言切换事件
+    window.dispatchEvent(new CustomEvent('languageChanged', {
+        detail: { language: currentLanguage }
+    }));
+}
+// 新增函数：更新日期选择器的选项文本
+function updateDateSelectorsText() {
+    const yearSelector = document.getElementById('yearSelector');
+    const monthSelector = document.getElementById('monthSelector');
+    const daySelector = document.getElementById('daySelector');
+
+    if (yearSelector && monthSelector && daySelector) {
+        // 更新年份选择器的选项文本
+        const yearOptions = yearSelector.querySelectorAll('option');
+        yearOptions.forEach(option => {
+            if (option.value) {
+                option.textContent = option.value + (currentLanguage === 'zh-CN' ? '年' : '');
+            } else {
+                option.textContent = currentLanguage === 'zh-CN' ? '选择年份' : 'Select Year';
+            }
+        });
+
+        // 更新月份选择器的选项文本
+        const monthOptions = monthSelector.querySelectorAll('option');
+        monthOptions.forEach(option => {
+            if (option.value) {
+                option.textContent = option.value + (currentLanguage === 'zh-CN' ? '月' : '');
+            } else {
+                option.textContent = currentLanguage === 'zh-CN' ? '选择月份' : 'Select Month';
+            }
+        });
+
+        // 更新日期选择器的选项文本
+        const dayOptions = daySelector.querySelectorAll('option');
+        dayOptions.forEach(option => {
+            if (option.value) {
+                option.textContent = option.value + (currentLanguage === 'zh-CN' ? '日' : '');
+            } else {
+                option.textContent = currentLanguage === 'zh-CN' ? '选择日期' : 'Select Day';
+            }
+        });
+
+        // 如果当前有选中的年月，需要重新生成日期选项
+        const selectedYear = yearSelector.value;
+        const selectedMonth = monthSelector.value;
+
+        if (selectedYear && selectedMonth) {
+            // 保存当前选中的日期
+            const selectedDay = daySelector.value;
+
+            // 清空日期选择器
+            daySelector.innerHTML = '<option value="">' +
+                (currentLanguage === 'zh-CN' ? '选择日期' : 'Select Day') + '</option>';
+
+            // 重新生成日期选项
+            const daysInMonth = getDaysInMonth(parseInt(selectedYear), parseInt(selectedMonth));
+            for (let day = 1; day <= daysInMonth; day++) {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = day + (currentLanguage === 'zh-CN' ? '日' : '');
+                daySelector.appendChild(option);
+            }
+
+            // 恢复选中的日期（如果存在）
+            if (selectedDay && selectedDay <= daysInMonth) {
+                daySelector.value = selectedDay;
+            }
+        }
     }
 }
-
 // 更新语言按钮文本
 function updateLanguageButton() {
     const languageText = document.getElementById('languageText');
@@ -307,9 +373,9 @@ function getAgeHumor(age) {
     const closestAge = ages.reduce((prev, curr) => {
         return (Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev);
     });
-    
-    return i18nResources[currentLanguage].ageHumor[closestAge] || 
-           (currentLanguage === 'zh-CN' ? "每个年龄段都有独特的魅力，享受当下吧！" : "Every age has its unique charm, enjoy the present!");
+
+    return i18nResources[currentLanguage].ageHumor[closestAge] ||
+        (currentLanguage === 'zh-CN' ? "每个年龄段都有独特的魅力，享受当下吧！" : "Every age has its unique charm, enjoy the present!");
 }
 
 // 获取历史事件
@@ -318,26 +384,26 @@ function getHistoricalEvent(age) {
         const events = i18nResources[currentLanguage].historicalEvents[age];
         return events[Math.floor(Math.random() * events.length)];
     }
-    
+
     const ages = Object.keys(i18nResources[currentLanguage].historicalEvents).map(Number);
     const closestAge = ages.reduce((prev, curr) => {
         return (Math.abs(curr - age) < Math.abs(prev - age) ? curr : prev);
     });
-    
+
     if (i18nResources[currentLanguage].historicalEvents[closestAge]) {
         const events = i18nResources[currentLanguage].historicalEvents[closestAge];
         return events[Math.floor(Math.random() * events.length)];
     }
-    
-    return currentLanguage === 'zh-CN' ? 
-           "人生每个阶段都有无限可能，继续前行吧！" : 
-           "Every stage of life has infinite possibilities, keep moving forward!";
+
+    return currentLanguage === 'zh-CN' ?
+        "人生每个阶段都有无限可能，继续前行吧！" :
+        "Every stage of life has infinite possibilities, keep moving forward!";
 }
 
 // 获取错误消息
 function getErrorMessage(key) {
-    return i18nResources[currentLanguage].errorMessages[key] || 
-           (currentLanguage === 'zh-CN' ? "发生错误" : "An error occurred");
+    return i18nResources[currentLanguage].errorMessages[key] ||
+        (currentLanguage === 'zh-CN' ? "发生错误" : "An error occurred");
 }
 
 // 初始化语言设置
@@ -354,7 +420,7 @@ function initLanguage() {
             currentLanguage = 'en-US';
         }
     }
-    
+
     applyLanguage();
     updateLanguageButton();
 }

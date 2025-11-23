@@ -60,7 +60,8 @@ body.dark-mode {
     font-weight: bold;
 }
 
-.theme-toggle, .language-toggle {
+.theme-toggle,
+.language-toggle {
     background: #333333;
     color: white;
     border: none;
@@ -73,11 +74,13 @@ body.dark-mode {
     transition: all 0.3s;
 }
 
-.dark-mode .theme-toggle, .dark-mode .language-toggle {
+.dark-mode .theme-toggle,
+.dark-mode .language-toggle {
     background: #444444;
 }
 
-.theme-toggle:hover, .language-toggle:hover {
+.theme-toggle:hover,
+.language-toggle:hover {
     transform: scale(1.05);
 }
 
