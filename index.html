@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Timer - 人生计时器</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <canvas id="backgroundCanvas"></canvas>
+    
+    <div class="container">
+        <div class="header">
+            <div class="app-title" data-i18n="appTitle">人生计时器 ✨</div>
+            <div class="header-controls">
+                <button id="languageToggle" class="language-toggle">
+                    <span id="languageIcon">🌐</span>
+                    <span id="languageText" data-i18n="language">中文</span>
+                </button>
+                <button id="themeToggle" class="theme-toggle">
+                    <span id="themeIcon">🌙</span>
+                    <span id="themeText" data-i18n="darkMode">黑夜模式</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title" data-i18n="selectBirthDate">选择出生日期</div>
+            
+            <input type="text" id="dateInputManual" class="date-input-manual" placeholder="YYYY-MM-DD" data-i18n-placeholder="datePlaceholder">
+            
+            <div class="date-selector-container">
+                <select id="yearSelector" class="date-selector">
+                    <option value="" data-i18n="selectYear">选择年份</option>
+                </select>
+                <select id="monthSelector" class="date-selector">
+                    <option value="" data-i18n="selectMonth">选择月份</option>
+                </select>
+                <select id="daySelector" class="date-selector">
+                    <option value="" data-i18n="selectDay">选择日期</option>
+                </select>
+            </div>
+            
+            <button id="btnSetDate" class="date-btn" data-i18n="confirm">确定</button>
+            
+            <div id="selectedDate" class="date-display" data-i18n="noDateSelected">未选择日期</div>
+            <div id="dateError" class="error-message"></div>
+            
+            <div class="life-expectancy-container">
+                <div class="life-expectancy-label" data-i18n="lifeExpectancy">预期寿命：</div>
+                <input type="number" id="lifeExpectancy" class="life-expectancy-input" min="1" max="130" value="80">
+                <div class="life-expectancy-label" data-i18n="years">岁</div>
+            </div>
+            <div id="lifeExpectancyError" class="error-message" data-i18n="lifeExpectancyError">请输入1-130之间的数字</div>
+            <div id="lifeExpectancyFunny" class="funny-message"></div>
+        </div>
+        
+        <div class="card">
+            <div id="currentAge" class="age-display" data-i18n="currentAge">当前年龄: --</div>
+            <div id="humorAge" class="humor-text"></div>
+            <div id="lifeProgress" class="progress-display" data-i18n="lifeProgress">人生进度: --%</div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div id="daysLived" class="stat-value">--</div>
+                    <div class="stat-label" data-i18n="daysLived">已过天数</div>
+                </div>
+                <div class="stat-item">
+                    <div id="daysLeft" class="stat-value">--</div>
+                    <div class="stat-label" data-i18n="daysLeft">剩余天数</div>
+                </div>
+                <div class="stat-item">
+                    <div id="lifePercentage" class="stat-value">--%</div>
+                    <div class="stat-label" data-i18n="lifePercentage">人生进度</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card event-card">
+            <div class="event-title" data-i18n="historicalEventsTitle">🎯🎯 在这个年龄，他们做到了：</div>
+            <div id="historicalEvent" class="event-text" data-i18n="selectDateFirst">选择出生日期后显示历史事件</div>
+        </div>
+    </div>
+
+    <script src="./main.js"></script>
+    <script src="./i18n.js"></script>
+</body>
+</html>
